@@ -129,6 +129,48 @@ struct RequestPut {
     }
 }
 
+struct RequestDelete {
+    /// Post function: makes a post on the API endpoint parsing body params
+    ///
+    /// - Parameters:
+    ///   - url: Url address for the API endpoint
+    ///   - bodyParams: *Optional - all parameters used on the body on the API endpoint
+    /// - Returns: URLRequest object
+    static func create(_ url: String,
+                       with bodyParams: [String: Any]?, queryParams: [String: Any]?, headers: [String: String]) -> URLRequest? {
+
+        var fullUrl: String = url
+        if let query = bodyParams {
+            fullUrl += buildQueryString(with: query)
+        } else {
+            fullUrl += "/"
+            if let params = bodyParams {
+                for (index, param) in params.enumerated() {
+                    fullUrl = fullUrl.replacingOccurrences(of: "{\(index)}", with: "\(param)/")
+                }
+            }
+        }
+
+        guard let urlRequest: URL = URL(string: fullUrl) else { return nil }
+        var request: URLRequest = URLRequest(url: urlRequest)
+        
+        request.httpMethod = "DELETE"
+        request.allHTTPHeaderFields = headers
+        
+        return request
+    }
+    
+    fileprivate static func buildQueryString(with queryParams: [String: Any]) -> String {
+        var fullUrl: String = "?"
+        queryParams.forEach { (key, value) in
+            fullUrl += "\(key)=\(value)&"
+        }
+
+        fullUrl = String(fullUrl.prefix(fullUrl.count - 1))
+        return fullUrl
+    }
+}
+
 struct RequestPatch {
     /// Identifier to use query or route format on the request
     static var isQuery: Bool = true // Get this information from a .plist file

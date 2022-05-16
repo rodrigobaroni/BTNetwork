@@ -39,13 +39,15 @@ public class Api: NSObject, ApiProtocol {
 
         switch method {
         case .GET:
-            urlRequest = RequestGet.build(url, with: parameters, or: nil, headers: headers ?? internalHeaders())
+            urlRequest = RequestGet.build(url, with: parameters, or: nil, headers: headers ?? internalHeaders(token: token))
         case .POST:
-            urlRequest = RequestPost.create(url, with: parameters, headers: headers ?? internalHeaders())
-        case .PUT: urlRequest = RequestPut.create(url, with: parameters, queryParams: queryParams, headers: headers ?? internalHeaders())
-        case .DELETE: break
+            urlRequest = RequestPost.create(url, with: parameters, headers: headers ?? internalHeaders(token: token))
+        case .PUT:
+            urlRequest = RequestPut.create(url, with: parameters, queryParams: queryParams, headers: headers ?? internalHeaders(token: token))
+        case .DELETE:
+            urlRequest = RequestDelete.create(url, with: parameters, queryParams: queryParams, headers: headers ?? internalHeaders(token: token))
         case .PATCH:
-            urlRequest = RequestPatch.build(url, with: queryParams, or: nil, headers: headers ?? internalHeaders())
+            urlRequest = RequestPatch.build(url, with: queryParams, or: nil, headers: headers ?? internalHeaders(token: token))
         }
 
         guard let myRequest = urlRequest else {
@@ -92,10 +94,11 @@ public class Api: NSObject, ApiProtocol {
         task.resume()
     }
     
-    private func internalHeaders() -> [String: String] {
+    private func internalHeaders(token: String) -> [String: String] {
         
         return [
-            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)",
+            "Content-Type": "application/json"
         ]
     }
 }
