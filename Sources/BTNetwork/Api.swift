@@ -69,7 +69,7 @@ public class Api: NSObject, ApiProtocol {
 
             do {
                 let decoder = JSONDecoder()
-                decoder.dateDecodingStrategyFormatters = [DateFormatter.standard, DateFormatter.standardT]
+                decoder.dateDecodingStrategyFormatters = [DateFormatter.standard, DateFormatter.standardT, DateFormatter.standardCustomMeasure]
                 let decodableData = try decoder.decode(T.self, from: data)
                 
                 switch statusCode {

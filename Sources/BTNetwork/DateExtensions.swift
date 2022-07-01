@@ -51,4 +51,10 @@ extension DateFormatter {
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         return dateFormatter
     }()
+    
+    static let standardCustomMeasure: DateFormatter = {
+        var dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'-03:00'"
+        return dateFormatter
+    }()
 }
